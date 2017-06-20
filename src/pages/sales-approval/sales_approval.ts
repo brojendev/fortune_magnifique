@@ -36,6 +36,26 @@ export class SalesApprovalPage {
                     {id: 2, name: "Brojendra Nath Das", mobile: 9002293496, email: 'brojendra.das@mjunction.in', purchaseData: '2017-06-20', purchaseQty: 20},
                     {id: 3, name: "Brojendra Nath Das", mobile: 9002293496, email: 'brojendra.das@mjunction.in', purchaseData: '2017-06-20', purchaseQty: 20}];
     this.selectedDealer = [];
+
+
+  }
+
+  ionViewCanLeave(){
+    console.log('Test');
+    if(this.multiSelect == true){
+      this.multiSelect = false;
+      return false
+    } else{
+      return true
+    }
+  }
+
+  hardBackClick(){
+    if(this.multiSelect == true){
+      this.multiSelect = false;
+    } else{
+      this.navCtrl.pop();
+    }
   }
 
   enableMultiselect(){
