@@ -6,21 +6,22 @@ import { Utils } from './utils';
 import 'rxjs/add/operator/toPromise';
 
 @Injectable()
-export class DealerService {
+export class DistributorService {
   constructor(private http: Http, private appConfig: AppConfig, private responseService: ResponseService,  private utils: Utils) { }
 
-  distributorSearchUrl = this.appConfig.baseUrl + '/fortune_distributor_req/search_distributor_for_sale_data';
-  registerPurchaseUrl = this.appConfig.baseUrl + '/fortune_distributor_req/enter_sale_data';
+  //distributorSearchUrl = this.appConfig.baseUrl + '/fortune_distributor_req/search_distributor_for_sale_data';
+  //registerPurchaseUrl = this.appConfig.baseUrl + '/fortune_distributor_req/enter_sale_data';
+  registeredSaleUrl = this.appConfig.baseUrl + '/fortune_distributor_req/subdealer_performance';
 
   defaultHeaders = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
 
-  getDistributorList(token: any, pageNumber: any, filterData: any): Promise<any> {
+  getDealerSaleList(token: any, pageNumber: any, filterData: any): Promise<any> {
     let body = {
       APIkey: this.appConfig.APIKey,
       token: token,
       programId: this.appConfig.programId,
       pageNumber: pageNumber,
-      distributor_hier_id: this.appConfig.dealerHierID,
+      dealer_hierarchy_ids: this.appConfig.dealerHierID,
     };
 
     if(filterData.distributorCompName !== undefined && filterData.distributorCompName !=0){
@@ -37,26 +38,4 @@ export class DealerService {
 
     return this.http.post(this.distributorSearchUrl, this.utils.transformRequest(body), options).toPromise().then(this.responseService.extractData).catch(this.responseService.handleAuthError);
   }
-
-  registerPurchase(token: any, purchaseData: any): Promise<any> {
-    let body = {
-      APIkey: this.appConfig.APIKey,
-      orgId: this.appConfig.orgId,
-      token: token,
-      programId: this.appConfig.programId,
-      prodMasId: this.appConfig.prodMasId,
-      saleQuantity: purchaseData.quantity,
-      saleDate: purchaseData.date,
-      dealertContactId: purchaseData.dealertContactId,
-    };
-
-    if(purchaseData.invoice !== undefined && purchaseData.invoice !=0){
-      body['c_file']= purchaseData.invoice;
-    }
-
-    let options = new RequestOptions({ headers: this.defaultHeaders });
-
-    return this.http.post(this.registerPurchaseUrl, this.utils.transformRequest(body), options).toPromise().then(this.responseService.extractData).catch(this.responseService.handleAuthError);
-  }
-
 }

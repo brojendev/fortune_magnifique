@@ -9,12 +9,12 @@ import 'rxjs/add/operator/toPromise';
 export class RewardService {
   constructor(private http: Http, private appConfig: AppConfig, private responseService: ResponseService, private utils: Utils) { }
 
-  catalogProductUrl = this.appConfig.baseUrl + '/fortune_demo_req/catalog_products';
-  addToCartUrl = this.appConfig.baseUrl + '/fortune_demo_req/addcart';
-  cartUrl = this.appConfig.baseUrl + '/fortune_demo_req/mycart';
-  cartUpdateUrl = this.appConfig.baseUrl + '/fortune_demo_req/save_quantity';
-  removeCartItemUrl = this.appConfig.baseUrl + '/fortune_demo_req/removecart';
-  placeOrderUrl = this.appConfig.baseUrl + '/fortune_demo_req/order';
+  catalogProductUrl = this.appConfig.baseUrl + '/fortune_distributor_req/catalog_products';
+  addToCartUrl = this.appConfig.baseUrl + '/fortune_distributor_req/addcart';
+  cartUrl = this.appConfig.baseUrl + '/fortune_distributor_req/mycart';
+  cartUpdateUrl = this.appConfig.baseUrl + '/fortune_distributor_req/save_quantity';
+  removeCartItemUrl = this.appConfig.baseUrl + '/fortune_distributor_req/removecart';
+  placeOrderUrl = this.appConfig.baseUrl + '/fortune_distributor_req/order';
 
   defaultHeaders = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
 
