@@ -19,11 +19,9 @@ export class HomePage implements OnInit {
   userName: any;
   constructor(public navCtrl: NavController, private localStorageService: LocalStorageService) {
     this.pages = [
-      { title: 'Sales Approval', component: SalesApprovalPage, img: 'assets/home_profile.png'},
-      { title: 'My Order', component: OrdersPage, img: 'assets/home_fabricator.png' },
+      { title: 'Sales Approval', component: SalesApprovalPage, img: 'assets/approve.png'},
+      { title: 'My Order', component: OrdersPage, img: 'assets/MyOrders.png' },
       { title: 'Rewards', component: RewardsPage, img: 'assets/home_rewards.png' },
-      { title: 'About Sitare', component: AboutPage, img: 'assets/home_about.png', data: { keyword: 'sitareFAQs'} },
-      { title: 'About Structura', component: AboutPage, img: 'assets/home_structura.png', data: { keyword: 'sitareFAQs'} },
       { title: 'Contact Us', component: ContactPage, img: 'assets/home_contact.png' },
     ];
   }
