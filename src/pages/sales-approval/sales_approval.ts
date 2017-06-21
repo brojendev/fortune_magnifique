@@ -4,7 +4,8 @@ import { LoginPage } from '../login/login';
 import { ActionSheetController, ToastController } from 'ionic-angular';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { LocalStorageService } from 'angular-2-local-storage';
-import { DealerService } from '../../service/dealer.service';
+import { DistributorService } from '../../service/distributor.service';
+
 import { Toast } from '@ionic-native/toast';
 
 @Component({
@@ -28,16 +29,49 @@ export class SalesApprovalPage {
               public platform: Platform,
               private toast: Toast,
               private toastCtrl: ToastController,
-              private dealerService: DealerService,
+              private DistributorService: DistributorService,
               private loadingCtrl: LoadingController,
               private localStorageService: LocalStorageService,
               private alertCtrl: AlertController) {
-    this.dealers = [{id: 1, name: "Brojendra Nath Das", mobile: 9002293496, email: 'brojendra.das@mjunction.in', purchaseData: '2017-06-20', purchaseQty: 20},
+    /*this.dealers = [{id: 1, name: "Brojendra Nath Das", mobile: 9002293496, email: 'brojendra.das@mjunction.in', purchaseData: '2017-06-20', purchaseQty: 20},
                     {id: 2, name: "Brojendra Nath Das", mobile: 9002293496, email: 'brojendra.das@mjunction.in', purchaseData: '2017-06-20', purchaseQty: 20},
-                    {id: 3, name: "Brojendra Nath Das", mobile: 9002293496, email: 'brojendra.das@mjunction.in', purchaseData: '2017-06-20', purchaseQty: 20}];
+                    {id: 3, name: "Brojendra Nath Das", mobile: 9002293496, email: 'brojendra.das@mjunction.in', purchaseData: '2017-06-20', purchaseQty: 20}];*/
+    this.getSaleList();
     this.selectedDealer = [];
+    this.dealers = [];
 
 
+  }
+
+
+  getSaleList(){
+    let loadingDialog = this.getLoadingDialog();
+    loadingDialog.present();
+    let token = this.getToken();
+    if (!token) {
+      this.navCtrl.setRoot(LoginPage);
+      return;
+    }
+
+    let self = this;
+    this.DistributorService.getDealerSaleList(token).then(function(res) {
+      loadingDialog.dismiss();
+      //console.log(res)
+      self.dealers = res.children_rec;
+    }).catch(function(error) {
+      loadingDialog.dismiss();
+      if (!error.isTokenValid) {
+        self.navCtrl.setRoot(LoginPage);
+        return;
+      }
+
+      self.getErrorAlert(
+        'Alert',
+        error.message,
+        error.message_code
+      ).present();
+
+    });
   }
 
   ionViewCanLeave(){
@@ -58,31 +92,138 @@ export class SalesApprovalPage {
     }
   }
 
-  enableMultiselect(){
+  enableMultiselect(selectedDealer){
+    console.log(selectedDealer);
     this.multiSelect = true;
     this.selectedDealer = [];
     this.selectedItemCount = 0;
   }
 
-  approveDealer(dealer: any){
-    this.selectedDealer=[dealer.id];
+  approveDealer(selectedSales: any,event: any){
+    //this.selectedSales=[dealer.sale_id];
+    let token = this.getToken();
+      if (!token) {
+        this.navCtrl.setRoot(LoginPage);
+        return;
+      }
+
+      if(event=='approve'){
+      let res_mode = '1';
+
+      if(selectedSales==''){
+        this.getErrorAlert(
+            'Alert',
+            'Please select atleast one sale'
+          ).present();
+      }else{
+        let alert = this.alertCtrl.create({
+          title: 'Confirm purchase',
+          message: 'Do you want to accept this sale?',
+          buttons: [
+            {
+              text: 'Cancel',
+              role: 'cancel',
+              handler: () => {
+                console.log('Cancel clicked');
+              }
+            },
+            {
+              text: 'Accept',
+              handler: () => {
+              console.log('approved   '+selectedSales);
+               this.updateDealerSale(selectedSales,res_mode);
+              }
+            }
+          ]
+        });
+        alert.present();
+      }
+
+
+      }else{
+      let res_mode = '0';
+
+      if(selectedSales==''){
+        this.getErrorAlert(
+            'Alert',
+            'Please select atleast one sale'
+          ).present();
+      }else{
+      let alert = this.alertCtrl.create({
+        title: 'Confirm purchase',
+        message: 'Do you want to reject this sale?',
+        buttons: [
+          {
+            text: 'Cancel',
+            role: 'cancel',
+            handler: () => {
+              console.log('Cancel clicked');
+            }
+          },
+          {
+            text: 'Reject',
+            handler: () => {
+            console.log('rejected   '+selectedSales);
+              this.updateDealerSale(selectedSales,res_mode);
+            }
+          }
+        ]
+      });
+      alert.present();
+      }
+
+      }
+  }
+
+
+  updateDealerSale(selectedSales: any,res_mode: any){
+    let loadingDialog = this.getLoadingDialog();
+    loadingDialog.present();
+
+    let token = this.getToken();
+      if (!token) {
+        this.navCtrl.setRoot(LoginPage);
+        return;
+      }
+
+      let self = this;
+
+      this.DistributorService.SaleConfirm(token,selectedSales,res_mode).then(function(res) {
+        loadingDialog.dismiss();
+        console.log(res)
+        self.dealers = res.sale_data;
+      }).catch(function(error) {
+      console.log('error: '+error);
+        loadingDialog.dismiss();
+        if (!error.isTokenValid) {
+          self.navCtrl.setRoot(LoginPage);
+          return;
+        }
+
+        self.getErrorAlert(
+          'Alert',
+          error.message
+        ).present();
+
+      });
+      //console.log(selectedSales);
   }
 
   selectDealer(dealer: any){
     if(dealer){
-      let index = this.selectedDealer.indexOf(dealer.id);
+      let index = this.selectedDealer.indexOf(dealer.sale_id);
       if(index > -1){
          this.selectedDealer.splice(index, 1);
          this.selectedItemCount --;
       } else{
-        this.selectedDealer.push(dealer.id);
+        this.selectedDealer.push(dealer.sale_id);
         this.selectedItemCount ++;
       }
     }
     if(this.selectedItemCount == 0){
       this.multiSelect = false;
     }
-    console.log(this.selectedDealer);
+    //console.log(this.selectedDealer);
   }
 
   getLoadingDialog() {
@@ -96,14 +237,16 @@ export class SalesApprovalPage {
     });
   }
 
-  getErrorAlert(title: string, message: string) {
+  getErrorAlert(title: string, message: string, msg_code: string = '') {
     return this.alertCtrl.create({
       title: title,
       message: message,
       buttons: [{
         text: 'Dismiss',
         handler: () => {
-          //this.navCtrl.pop();
+          if(msg_code=='msg_0091'){
+            this.navCtrl.pop();
+          }
         }
       }]
     });

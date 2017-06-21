@@ -1,6 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
 import { NavController, ModalController, AlertController, LoadingController } from 'ionic-angular';
-import { LoginPage } from '../login/login';
 import { GeneralService } from '../../service/general.service';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { Chart } from 'chart.js';

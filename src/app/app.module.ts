@@ -54,6 +54,7 @@ import { Utils } from '../service/utils';
 import { SharedService } from '../service/shared.service';
 import { RewardService } from '../service/reward.service';
 import { DealerService } from '../service/dealer.service';
+import { DistributorService } from '../service/distributor.service';
 import { OrderService } from '../service/order.service';
 
 import {enableProdMode} from '@angular/core';
@@ -97,7 +98,7 @@ enableProdMode();
     IonicModule.forRoot(MyApp),
     HttpModule,
     LocalStorageModule.withConfig({
-      prefix: 'fortuneElite-local',
+      prefix: 'fortuneMagnifique-local',
       storageType: 'localStorage'
     }),
     MomentModule
@@ -149,6 +150,7 @@ enableProdMode();
     Toast,
     RewardService,
     DealerService,
+    DistributorService,
     OrderService
   ]
 })
