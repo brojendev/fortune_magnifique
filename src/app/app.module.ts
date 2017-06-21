@@ -98,7 +98,7 @@ enableProdMode();
     IonicModule.forRoot(MyApp),
     HttpModule,
     LocalStorageModule.withConfig({
-      prefix: 'fortuneElite-local',
+      prefix: 'fortuneMagnifique-local',
       storageType: 'localStorage'
     }),
     MomentModule
@@ -150,6 +150,7 @@ enableProdMode();
     Toast,
     RewardService,
     DealerService,
+    DistributorService,
     OrderService
   ]
 })
