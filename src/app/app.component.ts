@@ -110,9 +110,13 @@ export class MyApp implements OnInit {
         FirebasePlugin.onNotificationOpen(function(notification) {
           console.log(notification);
           if(notification.body !== undefined){
+            var message = notification.body
+            if(notification.image !== undefined && notification.image != ""){
+              message = '<p style="max-height: 150px; text-align: center; margin-bottom: 5px;"><img src="'+notification.image+'"></p>' + message;
+            }
             alertCtrl.create({
-              title: 'Notification',
-              message: notification.body,
+              title: notification.title,
+              message: message,
               buttons: ['Dismiss']
             }).present();
           }
